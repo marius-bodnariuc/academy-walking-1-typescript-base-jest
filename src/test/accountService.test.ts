@@ -38,7 +38,7 @@ describe("Account Service", () => {
 
   it.each(
     [ '17/06/2021', '18/06/2021']
-  )("dater xxx Prints %i when we deposit %i", (today: string) => {
+  )("on date %s when we deposit %i", (today: string) => {
     const dateParts = today.split("/").map(e => parseInt(e));
     const dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
     MockDate.set(dateObject);
