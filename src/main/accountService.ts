@@ -6,9 +6,16 @@ export interface AccountService {
   printStatement: () => void;
 }
 
+interface Transaction {
+  amount: number;
+  balance: number;
+  date: Date;
+}
+
 export class BankAccountService implements AccountService {
   private balance = 0;
   private date= new Date();
+  private transactions: Transaction[] = [];
 
   constructor(private printOutput: PrintOutput) {
   }
@@ -22,16 +29,19 @@ export class BankAccountService implements AccountService {
   }
 
   deposit(amount: number): void {
-    this.date= new Date();
-    this.balance = amount;
+    this.balance += amount;
+
+    this.transactions.push({ amount, balance: this.balance, date: new Date() });
+
   }
 
-
   printStatement(): void {
-    this.printOutput(`
-    Date || Amount || Balance
-    ${this.dateFormatter(this.date)} || ${this.balance} || ${this.balance}
-    `);
+    const header = `Date || Amount || Balance`;
+    const transactions = this.transactions.map(
+      transaction => `${this.dateFormatter(transaction.date)} || ${transaction.amount} || ${transaction.balance}`
+    );
+
+    this.printOutput(["", header, ...transactions, ""].join("\n    "));
   }
 
   withdraw(amount: number): void {

@@ -57,4 +57,25 @@ describe("Account Service", () => {
     `);
   });
 
+  it("Keeps track of the balance correctly across multiple deposits", () => {
+    const dateParts = "17/06/2021".split("/").map(e => parseInt(e));
+    const dateObject = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    MockDate.set(dateObject);
+
+    const printOutput = jest.fn();
+
+    const accountService = new BankAccountService(printOutput);
+
+    accountService.deposit(500);
+    accountService.deposit(300);
+
+    accountService.printStatement();
+
+    expect(printOutput).toHaveBeenCalledWith(`
+    Date || Amount || Balance
+    17/06/2021 || 500 || 500
+    17/06/2021 || 300 || 800
+    `);
+  });
+
 });
