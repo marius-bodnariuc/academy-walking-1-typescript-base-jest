@@ -1,0 +1,1 @@
+export type PrintOutput = (output: string) => void;
