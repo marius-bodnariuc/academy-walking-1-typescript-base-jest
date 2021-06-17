@@ -37,13 +37,16 @@ export class BankAccountService implements AccountService {
 
   printStatement(): void {
     const header = `Date || Amount || Balance`;
-    const transactions = this.transactions.map(
-      transaction => `${this.dateFormatter(transaction.date)} || ${transaction.amount} || ${transaction.balance}`
-    );
-
+    const transactionPrinter = (transaction: Transaction) =>
+        `${this.dateFormatter(transaction.date)} || ${transaction.amount} || ${transaction.balance}`
+    const transactions = this.transactions.reverse().map(transactionPrinter);
     this.printOutput(["", header, ...transactions, ""].join("\n    "));
   }
 
-  withdraw(amount: number): void {
+  withdraw(withdrawalAmount: number): void {
+    const amount = -withdrawalAmount;
+    this.balance += amount;
+
+    this.transactions.push({ amount, balance: this.balance, date: new Date() });
   }
 }
